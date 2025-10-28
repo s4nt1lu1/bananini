@@ -55,7 +55,7 @@ class Boid:
         # --- Fin de la Regla de Borde ---
 
         # 1. Actualizar velocidad (Ecuación 4) 
-        self.velocidad = self.velocidad + fuerza_total * T # Multiplicamos por T (aunque en Ec. 4 no está, es físicamente más correcto)
+        self.velocidad = self.velocidad + fuerza_total * T 
         
         # Limitar la velocidad máxima
         norma = np.linalg.norm(self.velocidad)
@@ -127,16 +127,16 @@ class Boid:
         else:
             return np.zeros(2) # Influencia nula [cite: 68]
 
-# --- 2. La Simulación y Animación ---
+# --- 2. La Simulación y Animación --- (Actuación estelar de Gemini)
 
 # Parámetros de Simulación (del PDF)
-T = 0.01        # Periodo (aumentado para ver mejor la simulación)
+T = 0.01        # Periodo de actualización 
 WA = 0.1        # Peso alineación
 WS = 0.1        # Peso separación
 WC = 0.1        # Peso cohesión
-RA = 4.0       # Radio alineación (aumentado para un mundo más grande)
-RS = 0.5        # Radio separación (aumentado para un mundo más grande)
-RC = 4.0       # Radio cohesión (aumentado para un mundo más grande)
+RA = 4.0       # Radio alineación 
+RS = 0.5        # Radio separación 
+RC = 4.0       # Radio cohesión 
 
 # Parámetros del mundo
 ANCHO_MUNDO = 15
