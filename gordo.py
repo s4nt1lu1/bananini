@@ -6,10 +6,10 @@ from matplotlib.animation import FuncAnimation
 
 class Boid:
     def __init__(self, x, y, ancho_mundo, alto_mundo):
-        # Atributos: posicion (xi) y velocidad (vi) [cite: 42]
+        # Atributos: posicion (xi) y velocidad (vi)
         self.posicion = np.array([float(x), float(y)])
         
-        # Velocidad inicial aleatoria ~5 m/s [cite: 92, 93]
+        # Velocidad inicial aleatoria ~5 m/s
         angulo = np.random.rand() * 2 * np.pi
         self.velocidad = np.array([np.cos(angulo), np.sin(angulo)]) * 5.0
         
@@ -24,7 +24,7 @@ class Boid:
         vector_separacion = self.separacion(boids, rs)
         vector_cohesion = self.cohesion(boids, rc)
         
-        # Ponderar las fuerzas como en la Ecuación 4 [cite: 70]
+        # pondero las fuerzas
         fuerza_total = (wa * vector_alineacion + 
                         ws * vector_separacion + 
                         wc * vector_cohesion)
@@ -36,10 +36,10 @@ class Boid:
         Actualiza la velocidad y posición usando las ecuaciones del PDF.
         """
         
-        # --- Implementación de la Regla de Borde [cite: 80-83] ---
+        # Regla para los bordes ---
         fuerza_retorno = np.zeros(2)
-        margen = 20  # A qué distancia del borde empezamos a empujar
-        fuerza_magnitud = 0.5 # Qué tan fuerte empujamos
+        margen = 3  # A qué distancia del borde empezamos a empujar
+        fuerza_magnitud = 3.5 # Qué tan fuerte empujamos
         
         if self.posicion[0] < margen:
             fuerza_retorno[0] = (margen - self.posicion[0]) * fuerza_magnitud
@@ -54,7 +54,7 @@ class Boid:
         fuerza_total += fuerza_retorno
         # --- Fin de la Regla de Borde ---
 
-        # 1. Actualizar velocidad (Ecuación 4) [cite: 70]
+        # 1. Actualizar velocidad (Ecuación 4) 
         self.velocidad = self.velocidad + fuerza_total * T # Multiplicamos por T (aunque en Ec. 4 no está, es físicamente más correcto)
         
         # Limitar la velocidad máxima
@@ -62,36 +62,36 @@ class Boid:
         if norma > velocidad_max:
             self.velocidad = (self.velocidad / norma) * velocidad_max
         
-        # 2. Actualizar posición [cite: 72]
+        # 2. Actualizar posición 
         self.posicion = self.posicion + T * self.velocidad # Usamos la velocidad *nueva*
 
     # --- MÉTODOS DE REGLAS COMPLETADOS ---
 
     def alineacion(self, boids, radio_a):
         """
-        Regla de Alineación (Ecuación 1) [cite: 48, 53]
+        Regla de Alineación (Ecuación 1) 
         """
         vector_promedio = np.zeros(2)
         conteo = 0
         
         for otro in boids:
             dist = np.linalg.norm(self.posicion - otro.posicion)
-            # Vecindad de alineación Ai [cite: 65]
+            # Vecindad de alineación Ai 
             if 0 < dist < radio_a:
                 vector_promedio += otro.velocidad
                 conteo += 1
                 
-        # Salvar indeterminación si la vecindad está vacía [cite: 67]
+        # Salvar indeterminación si la vecindad está vacía 
         if conteo > 0:
             vector_promedio /= conteo
             a_i = vector_promedio - self.velocidad
             return a_i
         else:
-            return np.zeros(2) # Influencia nula [cite: 68]
+            return np.zeros(2) # Influencia nula 
 
     def separacion(self, boids, radio_s):
         """
-        Regla de Separación (Ecuación 2) [cite: 55, 57]
+        Regla de Separación (Ecuación 2)
         """
         vector_separacion = np.zeros(2)
         
@@ -107,7 +107,7 @@ class Boid:
 
     def cohesion(self, boids, radio_c):
         """
-        Regla de Cohesión (Ecuación 3) [cite: 59, 61]
+        Regla de Cohesión (Ecuación 3)
         """
         centro_masa = np.zeros(2)
         conteo = 0
@@ -129,19 +129,19 @@ class Boid:
 
 # --- 2. La Simulación y Animación ---
 
-# Parámetros de Simulación (del PDF) [cite: 75, 76]
+# Parámetros de Simulación (del PDF)
 T = 0.01        # Periodo (aumentado para ver mejor la simulación)
 WA = 0.1        # Peso alineación
 WS = 0.1        # Peso separación
 WC = 0.1        # Peso cohesión
-RA = 10.0       # Radio alineación (aumentado para un mundo más grande)
-RS = 1.0        # Radio separación (aumentado para un mundo más grande)
-RC = 10.0       # Radio cohesión (aumentado para un mundo más grande)
+RA = 4.0       # Radio alineación (aumentado para un mundo más grande)
+RS = 0.5        # Radio separación (aumentado para un mundo más grande)
+RC = 4.0       # Radio cohesión (aumentado para un mundo más grande)
 
 # Parámetros del mundo
-ANCHO_MUNDO = 100
-ALTO_MUNDO = 100
-NUM_BOIDS = 50
+ANCHO_MUNDO = 15
+ALTO_MUNDO = 15
+NUM_BOIDS = 25
 
 # --- Crear la bandada ---
 bandada = [Boid(np.random.rand() * ANCHO_MUNDO, 
